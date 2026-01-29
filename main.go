@@ -6,5 +6,11 @@ import (
 )
 
 func main() {
-	fmt.Println(DatabaseManager.Connection(""))
+	connection, err := DatabaseManager.Connection("")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(connection.Dialector.Name())
 }

@@ -36,7 +36,7 @@ var Database = map[string]any{
 			"url":            Env("DB_URL", nil),
 			"host":           Env("DB_HOST", "127.0.0.1"),
 			"port":           Env("DB_PORT", "5432"),
-			"database":       Env("DB_DATABASE", "hitalent"),
+			"database":       Env("DB_DATABASE", "postgres"),
 			"username":       Env("DB_USERNAME", "root"),
 			"password":       Env("DB_PASSWORD", ""),
 			"charset":        Env("DB_CHARSET", "utf8"),

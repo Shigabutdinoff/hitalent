@@ -1,24 +1,52 @@
 package DatabaseManager
 
 import (
-	"hitalent/config"
-	"hitalent/helpers"
+	"fmt"
+	. "hitalent/config"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 // Connection Get a database connection instance./**
-func Connection(connection string) string {
+func Connection(connection string) (*gorm.DB, error) {
 	if connection == "" {
-		connectionName, isTrue := helpers.DataGet(config.Database, "default", "pgsql").(string)
+		connectionName, isTrue := Config("database.default", "pgsql").(string)
 		if isTrue {
 			connection = connectionName
 		}
 	}
-	driverName := helpers.DataGet(config.Database, "connections."+connection+".driver", nil)
+	driverName := Config("database.connections."+connection+".driver", nil)
 
 	switch driverName {
 	case "pgsql":
-		return driverName.(string)
+		return postgreSQLSchemaDriver(connection)
+	case nil:
+		return nil, fmt.Errorf("unsupported database connection: %v", connection)
 	default:
-		return "No no no Mr. Fish"
+		return nil, fmt.Errorf("unsupported database driver: %v", driverName)
 	}
+}
+
+func postgreSQLSchemaDriver(connection string) (*gorm.DB, error) {
+	host := Config("database.connections."+connection+".host", "127.0.0.1")
+	port := Config("database.connections."+connection+".port", "5432")
+	database := Config("database.connections."+connection+".database", "hitalent")
+	username := Config("database.connections."+connection+".username", "root")
+	password := Config("database.connections."+connection+".password", "")
+	searchPath := Config("database.connections."+connection+".search_path", "public")
+	sslmode := Config("database.connections."+connection+".sslmode", "prefer")
+
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s search_path=%s sslmode=%s",
+		host,
+		port,
+		username,
+		password,
+		database,
+		searchPath,
+		sslmode,
+	)
+
+	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }
