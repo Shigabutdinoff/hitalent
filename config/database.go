@@ -32,7 +32,7 @@ var Database = map[string]any{
 	"connections": map[string]any{
 
 		"pgsql": map[string]any{
-			"driver":         "pgsql",
+			"driver":         "postgres",
 			"url":            Env("DB_URL", nil),
 			"host":           Env("DB_HOST", "127.0.0.1"),
 			"port":           Env("DB_PORT", "5432"),

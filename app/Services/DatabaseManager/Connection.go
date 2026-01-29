@@ -10,25 +10,31 @@ import (
 
 // Connection Get a database connection instance./**
 func Connection(connection string) (*gorm.DB, error) {
-	if connection == "" {
-		connectionName, isTrue := Config("database.default", "pgsql").(string)
-		if isTrue {
-			connection = connectionName
-		}
-	}
-	driverName := Config("database.connections."+connection+".driver", nil)
-
+	driverName := GetDriverNameByConnectionName(connection)
 	switch driverName {
-	case "pgsql":
+	case "pgsql", "postgres":
 		return postgreSQLSchemaDriver(connection)
-	case nil:
+	case "":
 		return nil, fmt.Errorf("unsupported database connection: %v", connection)
 	default:
 		return nil, fmt.Errorf("unsupported database driver: %v", driverName)
 	}
 }
 
-func postgreSQLSchemaDriver(connection string) (*gorm.DB, error) {
+func GetConnectionName(connection string) string {
+	connectionName := &connection
+	if connection == "" {
+		*connectionName = Config("database.default", "pgsql").(string)
+	}
+
+	return *connectionName
+}
+
+func GetDriverNameByConnectionName(connection string) string {
+	return Config("database.connections."+GetConnectionName(connection)+".driver", "").(string)
+}
+
+func GetDsn(connection string) string {
 	host := Config("database.connections."+connection+".host", "127.0.0.1")
 	port := Config("database.connections."+connection+".port", "5432")
 	database := Config("database.connections."+connection+".database", "hitalent")
@@ -37,7 +43,7 @@ func postgreSQLSchemaDriver(connection string) (*gorm.DB, error) {
 	searchPath := Config("database.connections."+connection+".search_path", "public")
 	sslmode := Config("database.connections."+connection+".sslmode", "prefer")
 
-	dsn := fmt.Sprintf(
+	return fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s search_path=%s sslmode=%s",
 		host,
 		port,
@@ -47,6 +53,8 @@ func postgreSQLSchemaDriver(connection string) (*gorm.DB, error) {
 		searchPath,
 		sslmode,
 	)
+}
 
-	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
+func postgreSQLSchemaDriver(connection string) (*gorm.DB, error) {
+	return gorm.Open(postgres.Open(GetDsn(connection)), &gorm.Config{})
 }
