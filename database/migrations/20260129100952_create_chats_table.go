@@ -16,7 +16,7 @@ func upCreateChatsTable(ctx context.Context, tx *sql.Tx) error {
 	_, err := tx.ExecContext(ctx, `
 		create table chats (
 			id bigserial primary key,
-			title varchar(255) not null,
+			title varchar(200) not null,
 			created_at timestamp (0)
 		);
 	`)

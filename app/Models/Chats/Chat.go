@@ -1,8 +1,8 @@
-package Chat
+package Chats
 
 import (
 	"hitalent/app/Models"
-	"hitalent/app/Models/Message"
+	"hitalent/app/Models/Messages"
 	"time"
 )
 
@@ -10,8 +10,8 @@ import (
 var model = Chat{Model: Model.NewInstance()}
 
 type Chat struct {
-	Model    Model.Model       `gorm:"-"`
-	Messages []Message.Message `gorm:"foreignKey:ChatId"`
+	Model    Model.Model        `gorm:"-"`
+	Messages []Messages.Message `gorm:"foreignKey:ChatId"`
 
 	Id        int64
 	Title     string

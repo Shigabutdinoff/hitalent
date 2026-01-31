@@ -2,15 +2,18 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
-	"hitalent/app/Models/Chat"
+	"hitalent/routes"
 )
 
 func main() {
-	chat, err := Chat.Find(1)
-	if err != nil {
-		panic(err)
-	}
+	mux := http.NewServeMux()
+	routes.Register(mux)
 
-	fmt.Println(chat)
+	addr := ":8080"
+	fmt.Printf("listening on %s", addr)
+	if err := http.ListenAndServe(addr, mux); err != nil {
+		fmt.Println(err)
+	}
 }

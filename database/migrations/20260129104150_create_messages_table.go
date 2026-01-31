@@ -17,7 +17,7 @@ func upCreateMessagesTable(ctx context.Context, tx *sql.Tx) error {
 		create table messages (
 			id bigserial primary key,
 			chat_id bigint not null constraint messages_chat_id_foreign references chats on delete cascade,
-			text varchar(255) not null,
+			text varchar(5000) not null,
 			created_at timestamp (0)
 		);
 	`)

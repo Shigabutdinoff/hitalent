@@ -1,4 +1,4 @@
-package Message
+package Messages
 
 import (
 	"hitalent/app/Models"
