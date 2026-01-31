@@ -12,6 +12,7 @@ func init() {
 }
 
 func upCreateChatsTable(ctx context.Context, tx *sql.Tx) error {
+	// This code is executed when the migration is applied.
 	_, err := tx.ExecContext(ctx, `
 		create table chats (
 			id bigserial primary key,
@@ -23,6 +24,7 @@ func upCreateChatsTable(ctx context.Context, tx *sql.Tx) error {
 }
 
 func downCreateChatsTable(ctx context.Context, tx *sql.Tx) error {
+	// This code is executed when the migration is rolled back.
 	_, err := tx.ExecContext(ctx, `drop table chats;`)
 	return err
 }

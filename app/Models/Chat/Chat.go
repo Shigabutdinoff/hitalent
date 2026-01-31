@@ -2,6 +2,7 @@ package Chat
 
 import (
 	"hitalent/app/Models"
+	"hitalent/app/Models/Message"
 	"time"
 )
 
@@ -9,9 +10,10 @@ import (
 var model = Chat{Model: Model.NewInstance()}
 
 type Chat struct {
-	Model Model.Model `gorm:"-"`
+	Model    Model.Model       `gorm:"-"`
+	Messages []Message.Message `gorm:"foreignKey:ChatId"`
 
-	ID        int64
+	Id        int64
 	Title     string
 	CreatedAt *time.Time
 }
@@ -22,7 +24,7 @@ func GetModel() Chat {
 }
 
 // TableName Get the table associated with the model.
-func (chat Chat) TableName() string {
+func (Chat) TableName() string {
 	return "chats"
 }
 
