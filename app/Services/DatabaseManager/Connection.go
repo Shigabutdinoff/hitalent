@@ -10,12 +10,13 @@ import (
 
 // Connection Get a database connection instance./**
 func Connection(connection string) (*gorm.DB, error) {
-	driverName := GetDriverNameByConnectionName(connection)
+	connectionName := GetConnectionName(connection)
+	driverName := GetDriverNameByConnectionName(connectionName)
 	switch driverName {
 	case "pgsql", "postgres":
-		return postgreSQLSchemaDriver(connection)
+		return postgreSQLSchemaDriver(connectionName)
 	case "":
-		return nil, fmt.Errorf("unsupported database connection: %v", connection)
+		return nil, fmt.Errorf("unsupported database connection: %v", connectionName)
 	default:
 		return nil, fmt.Errorf("unsupported database driver: %v", driverName)
 	}
@@ -30,8 +31,8 @@ func GetConnectionName(connection string) string {
 	return *connectionName
 }
 
-func GetDriverNameByConnectionName(connection string) string {
-	return Config("database.connections."+GetConnectionName(connection)+".driver", "").(string)
+func GetDriverNameByConnectionName(connectionName string) string {
+	return Config("database.connections."+connectionName+".driver", "").(string)
 }
 
 func GetDsn(connection string) string {

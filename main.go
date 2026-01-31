@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"hitalent/app/Services/DatabaseManager"
+
+	"hitalent/app/Models/Chat"
 )
 
 func main() {
-	connection, err := DatabaseManager.Connection("")
+	chat, err := Chat.Find(1)
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
 
-	fmt.Println(connection.Dialector.Name())
+	fmt.Println(chat)
 }
