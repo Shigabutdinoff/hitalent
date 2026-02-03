@@ -21,7 +21,7 @@ docker compose up
 Собирает утилиту миграций goose внутри контейнера.
 
 ```ash
-docker compose exec -T go go build -o goose.exe .\cmd\goose
+docker compose exec -T go go build -o goose.exe ./cmd/goose
 ```
 
 Применяет миграции базы данных.
